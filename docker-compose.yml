@@ -17,13 +17,30 @@ services:
      - ZOOKEEPER_CONNECT=zookeeper:2181
 
   # this is the aggregator DB
-  agregator-postgres:
+  aggregator-postgres:
     image: debezium/example-postgres:${DEBEZIUM_VERSION}
     ports:
      - 5436:5432
     environment:
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=postgres
+    command:
+     - "postgres"
+     - "-c"
+     - "wal_level=logical"
+
+  # this is the source DB
+  source-postgres:
+    image: debezium/example-postgres:${DEBEZIUM_VERSION}
+    ports:
+      - 5437:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
 
   connect:
     # image: debezium/connect:${DEBEZIUM_VERSION}
@@ -32,6 +49,8 @@ services:
      - 8083:8083
     links:
      - kafka
+     - source-postgres
+     - aggregator-postgres
      # - postgres
     environment:
      - BOOTSTRAP_SERVERS=kafka:9092

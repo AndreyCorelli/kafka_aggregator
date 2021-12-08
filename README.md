@@ -7,18 +7,12 @@ https://habr.com/ru/company/flant/blog/523510/
 Run `docker/build_images.sh` script to build debezium/connect + JDBC connect image.
 Then run `docker-compose up` command.
 
-# Target (aggregation) DB setup
-Run the following script:
-
-```sh
-psql --host localhost --port 5436 -U postgres -f "data/account_users_schema.txt"
-```
-
 This script will:
 - create the "aggregator" DB,
 - create the MS DB schema in the aggregator DB.
 
 ## Source DB setup
+*This is not needed in the default configuration* as it has both the source and the target database services. 
 First, check the MS DB connection detail in `connectors/ms_conn.json`.
 
 Modify your DB to use "logical" [Write Ahead Log](https://www.postgresql.org/docs/9.6/runtime-config-wal.html) level.
@@ -36,17 +30,25 @@ For instance, in you docker-compose.yml file you may add the following commands 
 
 Also, your DB user has to belong to the `SUPERUSER` role (`REPLICATION` may do but not necessarily).
 
+## DB setup
+Run the following script:
+
+```sh
+psql --host localhost --port 5437 -U postgres -f "data/source_schema.txt"
+psql --host localhost --port 5436 -U postgres -f "data/target_schema.txt"
+```
+
 ## Create / delete / modify connectors
 
 ```sh
-curl -i -XPOST -H "Content-Type: application/json" -d @connectors/aggregator_sink_conn.json http://localhost:8083/connectors
-curl -i -XPOST -H "Content-Type: application/json" -d @connectors/ms_conn.json http://localhost:8083/connectors
+curl -i -XPOST -H "Content-Type: application/json" -d @connectors/sink_conn.json http://localhost:8083/connectors
+curl -i -XPOST -H "Content-Type: application/json" -d @connectors/source_conn.json http://localhost:8083/connectors
 
-curl -i -XDELETE http://localhost:8083/connectors/ms-connector
-curl -i -XDELETE http://localhost:8083/connectors/aggregator-sink-connector
-  
-curl -i http://localhost:8083/connectors/ms-connector/status
-curl -i http://localhost:8083/connectors/aggregator-sink-connector/status
+curl -i http://localhost:8083/connectors/source-connector/status
+curl -i http://localhost:8083/connectors/sink-connector/status
+
+curl -i -XDELETE http://localhost:8083/connectors/source-connector
+curl -i -XDELETE http://localhost:8083/connectors/sink-connector
 ```
 
 ## Check the topic

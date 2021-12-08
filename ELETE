@@ -1,6 +1,0 @@
-HTTP/1.1 200 OK
-Date: Mon, 06 Dec 2021 20:20:49 GMT
-Content-Type: application/json
-Content-Length: 16
-Server: Jetty(9.4.43.v20210629)
-
