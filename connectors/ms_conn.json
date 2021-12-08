@@ -1,0 +1,21 @@
+{
+  "name": "ms-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "database.hostname": "172.17.0.1",
+    "database.port": "5432",
+    "database.user": "sennder_tenant",
+    "database.password": "sennder_tenant",
+    "database.dbname" : "sennder",
+    "database.server.name": "local_db",
+    "table.include.list": "public.accounts_user",
+    "heartbeat.interval.ms": "5000",
+    "slot.name": "sennder_debezium",
+    "publication.name": "sennder_publication",
+    "transforms": "AddPrefix",
+    "transforms.AddPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.AddPrefix.regex": "local_db.public.(.*)",
+    "transforms.AddPrefix.replacement": "data.ms.sennder"
+  }
+}
