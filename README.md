@@ -67,7 +67,7 @@ docker exec -it kafka_aggregator_kafka_1 /bin/bash
   --bootstrap-server kafka:9092 \
   --from-beginning \
   --property print.key=true \
-  --topic aggregator.order
+  --topic aggregator.order > message.txt
 ```
 
 ## AKHQ Kafka GUI
