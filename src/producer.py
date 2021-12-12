@@ -1,4 +1,3 @@
-import json
 import os
 import pathlib
 import uuid
@@ -6,6 +5,8 @@ from typing import Any, Dict
 
 from confluent_kafka.avro import AvroProducer
 from confluent_kafka import avro
+
+from src.message_serializer import JsonFriendlyMessageSerializer
 
 
 def load_avro_schema_from_file(schema_file: str):
@@ -25,12 +26,9 @@ def send_record(
         record_key: int,
         schema_file: str = 'order.avsc',
         bootstrap_servers: str = 'localhost:9092',
-        schema_registry: str = 'http://localhost:8081',
-        ):
+        schema_registry: str = 'http://localhost:8081'):
     key_schema, value_schema = load_avro_schema_from_file(schema_file)
-    j1 = key_schema.to_json()
-    j2 = value_schema.to_json()
-    j3 = str(j2)
+    # value_schema = JsonFriendlyRecordSchema.extend_schema(value_schema)
 
     producer_config = {
         "bootstrap.servers": bootstrap_servers,
@@ -38,6 +36,7 @@ def send_record(
     }
 
     producer = AvroProducer(producer_config, default_key_schema=key_schema, default_value_schema=value_schema)
+    producer._serializer = JsonFriendlyMessageSerializer.extend_serializer(producer._serializer)
 
     key = record_key if record_key else str(uuid.uuid4())
 

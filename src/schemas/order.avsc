@@ -1,7 +1,7 @@
 {
-  "type":"record",
-  "name":"order",
-  "fields":[
+ "type":"record",
+ "name":"order",
+ "fields":[
     {
        "name":"id",
        "type":"int"
@@ -23,6 +23,6 @@
        ],
        "default":null
     }
-  ],
-  "connect.name":"order"
+ ],
+ "connect.name":"order"
 }

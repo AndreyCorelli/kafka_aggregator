@@ -1,9 +1,13 @@
 avro-python3==1.10.0
 certifi==2021.10.8
 charset-normalizer==2.0.9
-confluent-kafka==1.7.0
 fastavro==1.4.7
 idna==3.3
 kafka-python==2.0.2
 requests==2.26.0
 urllib3==1.26.7
+confluent-kafka==1.7.0
+
+# confluent-kafka==1.7.0 doesn't work well with hashable MappingSchemas, I had to fork it
+# git+ssh://git@github.com/AndreyCorelli/confluent-kafka-python@master
+# or we may use a workaround (see JsonFriendlyRecordSchema)

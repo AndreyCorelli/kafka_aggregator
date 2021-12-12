@@ -1,8 +1,5 @@
 # Kafka Connect Postgresql consumer
 
-https://debezium.io/blog/2017/09/25/streaming-to-another-database/
-https://habr.com/ru/company/flant/blog/523510/
-
 ## Running the Docker swarm
 Run `docker/build_images.sh` script to build debezium/connect + JDBC connect image.
 Then run `docker-compose up` command.
@@ -12,7 +9,7 @@ This script will:
 - create the MS DB schema in the aggregator DB.
 
 ## Source DB setup
-*This is not needed in the default configuration* as it has both the source and the target database services. 
+*This is already not needed in the default configuration* as it has both the source and the target database services. 
 First, check the MS DB connection detail in `connectors/ms_conn.json`.
 
 Modify your DB to use "logical" [Write Ahead Log](https://www.postgresql.org/docs/9.6/runtime-config-wal.html) level.
