@@ -48,8 +48,8 @@ psql --host localhost --port 5436 -U postgres -d aggregator
 ## Create / delete / modify connectors
 
 ```sh
-curl -i -XPOST -H "Content-Type: application/json" -d @connectors/sink_conn.json http://localhost:8083/connectors
 curl -i -XPOST -H "Content-Type: application/json" -d @connectors/source_conn.json http://localhost:8083/connectors
+curl -i -XPOST -H "Content-Type: application/json" -d @connectors/sink_conn.json http://localhost:8083/connectors
 
 curl -i http://localhost:8083/connectors/source-connector/status
 curl -i http://localhost:8083/connectors/sink-connector/status
@@ -67,7 +67,7 @@ docker exec -it kafka_aggregator_kafka_1 /bin/bash
   --bootstrap-server kafka:9092 \
   --from-beginning \
   --property print.key=true \
-  --topic connect.order
+  --topic aggregator.order
 ```
 
 ## AKHQ Kafka GUI
