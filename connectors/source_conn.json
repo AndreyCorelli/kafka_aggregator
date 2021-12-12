@@ -10,7 +10,7 @@
       "incrementing.column.name": "id",
       "mode": "incrementing",
       "table.whitelist": "order",
-      "topic.prefix": "connect.",
+      "topic.prefix": "aggregator.",
       "transforms": "createKey,extractInt",
 
       "key.converter": "io.confluent.connect.avro.AvroConverter",

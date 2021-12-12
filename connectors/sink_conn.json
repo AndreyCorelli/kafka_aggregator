@@ -13,7 +13,7 @@
     "topic.prefix": "connect",
     "transforms": "createKey,extractInt",
 
-    "topics": "connect.order",
+    "topics": "aggregator.order",
     "pk.fields": "id",
     "pk.mode": "record_key",
     "auto.create": "true",

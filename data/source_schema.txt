@@ -24,5 +24,3 @@ CREATE TABLE public.order (
 
 INSERT INTO public."order" (title, created) VALUES ('Alfa', CURRENT_TIMESTAMP);
 INSERT INTO public."order" (title, created) VALUES ('Bravo', CURRENT_TIMESTAMP);
-
-INSERT INTO public."order" (title, created) VALUES ('Delta', CURRENT_TIMESTAMP);
