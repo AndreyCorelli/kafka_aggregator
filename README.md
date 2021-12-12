@@ -1,31 +1,17 @@
 # Kafka Connect Postgresql consumer
 
-## Running the Docker swarm
+See also [the Google document](https://docs.google.com/document/d/1Wv229EfTRCdWMAaEdJdKEaVPt_v30g8Tu-5-kWYTsw8/edit?usp=sharing)
+
+The project runs a number of Docker containers that:
+- host 2 databases: the source (“sennder”, port 5437) and the target (“aggregator”, port 5436),
+- set up a Kafka pipe from the source (JDBC Source) to the destination (JDBC Sink),
+- host a simple GUI for Kafka (http://localhost:8085/ui/docker-kafka-server),
+- implement a simple Python producer usage example for populating the target DB from code.
+
+
+## Running the Docker containers
 Run `docker/build_images.sh` script to build debezium/connect + JDBC connect image.
 Then run `docker-compose up` command.
-
-This script will:
-- create the "aggregator" DB,
-- create the MS DB schema in the aggregator DB.
-
-## Source DB setup
-*This is already not needed in the default configuration* as it has both the source and the target database services. 
-First, check the MS DB connection detail in `connectors/ms_conn.json`.
-
-Modify your DB to use "logical" [Write Ahead Log](https://www.postgresql.org/docs/9.6/runtime-config-wal.html) level.
-For instance, in you docker-compose.yml file you may add the following commands to your target PostgreSQL DB service:
-```yaml
-  <DB service>:
-    image: ...
-    volumes:
-      - ...    
-    command:
-      - "postgres"
-      - "-c"
-      - "wal_level=logical"
-```
-
-Also, your DB user has to belong to the `SUPERUSER` role (`REPLICATION` may do but not necessarily).
 
 ## DB setup
 Run the following script:
@@ -35,6 +21,7 @@ psql --host localhost --port 5437 -U postgres -f "data/source_schema.txt"
 psql --host localhost --port 5436 -U postgres -f "data/target_schema.txt"
 ```
 
+(password is "postgres")
 Connect to the source / target DB with the following:
 
 ```sh
