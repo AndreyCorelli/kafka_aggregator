@@ -7,6 +7,7 @@ services:
      - 2181:2181
      - 2888:2888
      - 3888:3888
+
   kafka:
     image: debezium/kafka:${DEBEZIUM_VERSION}
     ports:
@@ -16,11 +17,24 @@ services:
     environment:
      - ZOOKEEPER_CONNECT=zookeeper:2181
 
+  # the way to sync source and sink
+  schema-registry:
+    image: confluentinc/cp-schema-registry:6.2.1
+    depends_on:
+      - kafka
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka:9092'
+      SCHEMA_REGISTRY_HOST_NAME: 'schema-registry'
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: 'INFO'
+
   # this is the aggregator DB
   aggregator-postgres:
     image: debezium/example-postgres:${DEBEZIUM_VERSION}
     ports:
-     - 5436:5432
+     - ${DB_PORT_TARGET}:5432
     environment:
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=postgres
@@ -33,7 +47,7 @@ services:
   source-postgres:
     image: debezium/example-postgres:${DEBEZIUM_VERSION}
     ports:
-      - 5437:5432
+      - ${DB_PORT_SOURCE}:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -46,7 +60,7 @@ services:
     # image: debezium/connect:${DEBEZIUM_VERSION}
     image: debezium_jdbc:latest
     ports:
-     - 8083:8083
+     - ${CONNECTOR_PORT}:8083
     links:
      - kafka
      - source-postgres
@@ -62,3 +76,24 @@ services:
 # directory and uncomment the lines below
 #    volumes:
 #     - ./debezium-connector-postgres:/kafka/connect/debezium-connector-postgres
+
+  akhq:
+    image: tchiotludo/akhq:0.18.0
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: 'kafka:9092'
+              schema-registry:
+                url: 'http://schema-registry:8081'
+              connect:
+                - name: "connect"
+                  url: "http://connect:${CONNECTOR_PORT}/"
+    ports:
+      - 8085:8080
+    links:
+      - kafka
+      - schema-registry
+      - connect

@@ -38,6 +38,13 @@ psql --host localhost --port 5437 -U postgres -f "data/source_schema.txt"
 psql --host localhost --port 5436 -U postgres -f "data/target_schema.txt"
 ```
 
+Connect to the source / target DB with the following:
+
+```sh
+psql --host localhost --port 5437 -U postgres -d sennder
+psql --host localhost --port 5436 -U postgres -d aggregator
+```
+
 ## Create / delete / modify connectors
 
 ```sh
@@ -54,11 +61,15 @@ curl -i -XDELETE http://localhost:8083/connectors/sink-connector
 ## Check the topic
 
 ```sh
-docker exec -it kafka_connect_kafka_1 /bin/bash
+docker exec -it kafka_aggregator_kafka_1 /bin/bash
 
 ./bin/kafka-console-consumer.sh \
   --bootstrap-server kafka:9092 \
   --from-beginning \
   --property print.key=true \
-  --topic data.ms.sennder
+  --topic data.sennder
 ```
+
+## AKHQ Kafka GUI
+
+[http://localhost:8085/ui/docker-kafka-server](http://localhost:8085/ui/docker-kafka-server/connect/connect/create)

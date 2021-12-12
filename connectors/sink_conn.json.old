@@ -1,0 +1,30 @@
+{
+  "name": "sink-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "tasks.max": "2",
+    "connection.url": "jdbc:postgresql://aggregator-postgres:5432/aggregator",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "topics": "data.sennder",
+    "pk.fields": "id",
+    "pk.mode": "record_key",
+    "auto.create": "true",
+    "auto.evolve": "true",
+    "insert.mode": "upsert",
+    "delete.enabled": "true",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "table.name.format": "${topic}",
+    "schemas.enable": false,
+
+    "transforms":"createKey,extractInt",
+     "transforms.createKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+     "transforms.createKey.fields":"id",
+     "transforms.extractInt.type":"org.apache.kafka.connect.transforms.ExtractField$Key",
+     "transforms.extractInt.field":"id",
+  }
+}

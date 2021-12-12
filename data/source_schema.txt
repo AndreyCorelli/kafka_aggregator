@@ -22,5 +22,7 @@ CREATE TABLE public.order (
     created timestamp with time zone
 );
 
-INSERT INTO "order" (title, created) VALUES ('Alfa', CURRENT_TIMESTAMP);
-INSERT INTO "order" (title, created) VALUES ('Bravo', CURRENT_TIMESTAMP);
+INSERT INTO public."order" (title, created) VALUES ('Alfa', CURRENT_TIMESTAMP);
+INSERT INTO public."order" (title, created) VALUES ('Bravo', CURRENT_TIMESTAMP);
+
+INSERT INTO public."order" (title, created) VALUES ('Delta', CURRENT_TIMESTAMP);
